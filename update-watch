@@ -20,30 +20,30 @@ import pet.update
 
 import argparse
 
+
 def main():
-  parser = argparse.ArgumentParser(description='check watch files')
-  parser.add_argument('packages', nargs='*')
+    parser = argparse.ArgumentParser(description='check watch files')
+    parser.add_argument('packages', nargs='*')
 
-  options = parser.parse_args()
-  session = pet.models.Session()
-  updater = pet.update.WatchUpdater(session)
+    options = parser.parse_args()
+    session = pet.models.Session()
+    updater = pet.update.WatchUpdater(session)
 
-  try:
-    if options.packages:
-      named_trees = session.query(pet.models.NamedTree) \
-          .join(pet.models.NamedTree.package) \
-          .filter(pet.models.Package.name.in_(options.packages))
-      updater.run(named_trees)
-    else:
-      updater.run()
-    session.commit()
-  except KeyboardInterrupt:
-    print "E: Interrupted."
-    session.commit()
-  except:
-    session.rollback()
-    raise
+    try:
+        if options.packages:
+            named_trees = session.query(pet.models.NamedTree) \
+                .join(pet.models.NamedTree.package) \
+                .filter(pet.models.Package.name.in_(options.packages))
+            updater.run(named_trees)
+        else:
+            updater.run()
+        session.commit()
+    except KeyboardInterrupt:
+        print "E: Interrupted."
+        session.commit()
+    except:
+        session.rollback()
+        raise
 
 if __name__ == '__main__':
-  main()
-
+    main()

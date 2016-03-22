@@ -18,13 +18,13 @@
 import pet.models
 import pet.update
 
+
 def main():
-  session = pet.models.Session()
-  bts = session.query(pet.models.BugTracker).one()
-  btsu = pet.update.BugTrackerUpdater(bts)
-  btsu.run()
-  session.commit()
+    session = pet.models.Session()
+    bts = session.query(pet.models.BugTracker).one()
+    btsu = pet.update.BugTrackerUpdater(bts)
+    btsu.run()
+    session.commit()
 
 if __name__ == '__main__':
-  main()
-
+    main()
