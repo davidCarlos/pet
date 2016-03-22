@@ -20,19 +20,18 @@ import pet.update
 
 import sys
 
+
 def main(argv):
-  session = pet.models.Session()
-
-  for archive_name in argv[1:]:
-    archives = session.query(pet.models.Archive).filter_by(name=archive_name) \
-        .all()
-    for archive in archives:
-      print "I: Updating archive {0}".format(archive.name)
-      updater = pet.update.ArchiveUpdater(archive)
-      updater.run()
-
-  session.commit()
+    session = pet.models.Session()
+    for archive_name in argv[1:]:
+        archives = session.query(pet.models.Archive).filter_by(
+            name=archive_name) \
+            .all()
+        for archive in archives:
+            print "I: Updating archive {0}".format(archive.name)
+            updater = pet.update.ArchiveUpdater(archive)
+            updater.run()
+    session.commit()
 
 if __name__ == '__main__':
-  main(sys.argv)
-
+    main(sys.argv)

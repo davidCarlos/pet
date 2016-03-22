@@ -17,51 +17,61 @@
 SQL helper functions for database maintainance.
 """
 
-from pet.exceptions import *
+from pet.exceptions import DatabaseError
 
 import sqlalchemy.sql
 
+
 class DBUpdate(object):
-  def __init__(self, schema_version, statements=None, callable=None):
-    self.schema_version = schema_version
-    self.statements = statements
-    self.callable = callable
-  def run(self, connection):
-    print "Upgrading to schema version {0}".format(self.schema_version)
-    with connection.begin():
-      if self.schema_version != 1:
-        old_version = connection.execute("SELECT value FROM config WHERE key = 'schema_version'").scalar()
-        if int(old_version) + 1 != self.schema_version:
-          raise DatabaseError("Tried to update schema from {0} to {1}".format(old_version, self.schema_version))
-      if self.statements:
-        for s in self.statements:
-          connection.execute(s)
-      if self.callable:
-        self.callable(connection)
-      connection.execute(
-          sqlalchemy.sql.text(
-            "UPDATE config SET value = :version WHERE key = 'schema_version'"),
-          version=self.schema_version)
+    def __init__(self, schema_version, statements=None, callable=None):
+        self.schema_version = schema_version
+        self.statements = statements
+        self.callable = callable
+
+    def run(self, connection):
+        print "Upgrading to schema version {0}".format(self.schema_version)
+        with connection.begin():
+            if self.schema_version != 1:
+                old_version = connection.execute("""SELECT value FROM config
+                  WHERE key = 'schema_version'""").scalar()
+                if int(old_version) + 1 != self.schema_version:
+                    raise DatabaseError("""Tried to update schema from
+                      {0} to {1}""".format(old_version, self.schema_version))
+            if self.statements:
+                for s in self.statements:
+                    connection.execute(s)
+            if self.callable:
+                self.callable(connection)
+            connection.execute(
+                sqlalchemy.sql.text(
+                    """UPDATE config SET value = :version
+                    WHERE key = 'schema_version'"""),
+                version=self.schema_version)
+
 
 class DBUpdater(object):
-  __shared = {'updates': {}}
-  def __init__(self):
-    self.__dict__ = self.__shared
-  def add(self, schema_version, statements=None, callable=None):
-    update = DBUpdate(schema_version, statements, callable=callable)
-    self.updates[schema_version] = update
-  def run(self, engine, create_database=False):
-    connection = engine.connect()
-    try:
-      if create_database:
-        old_version = 0
-      else:
-        old_version = int(connection.execute("SELECT value FROM config WHERE key = 'schema_version'").scalar())
-      new_version = max(self.updates.keys())
-      for v in range(old_version + 1, new_version + 1):
-        self.updates[v].run(connection)
-    finally:
-      connection.close()
+    __shared = {'updates': {}}
+
+    def __init__(self):
+        self.__dict__ = self.__shared
+
+    def add(self, schema_version, statements=None, callable=None):
+        update = DBUpdate(schema_version, statements, callable=callable)
+        self.updates[schema_version] = update
+
+    def run(self, engine, create_database=False):
+        connection = engine.connect()
+        try:
+            if create_database:
+                old_version = 0
+            else:
+                old_version = int(connection.execute("""SELECT value FROM config
+                  WHERE key = 'schema_version'""").scalar())
+            new_version = max(self.updates.keys())
+            for v in range(old_version + 1, new_version + 1):
+                self.updates[v].run(connection)
+        finally:
+            connection.close()
 
 DBUpdater().add(1, statements=[
   """
@@ -149,11 +159,13 @@ DBUpdater().add(5, statements=[
     ADD COLUMN maintainer TEXT,
     ADD COLUMN uploaders TEXT ARRAY,
     ADD COLUMN homepage TEXT,
-    ADD COLUMN source_changelog TEXT, -- source package name from debian/changelog
+    ADD COLUMN source_changelog TEXT,
+        -- source package name from debian/changelog
     ADD COLUMN version debversion,
     ADD COLUMN distribution TEXT,
     ADD COLUMN urgency TEXT,
-    ADD COLUMN last_changed TIMESTAMP(0) WITH TIME ZONE, -- time from last changelog entry
+    ADD COLUMN last_changed TIMESTAMP(0) WITH TIME ZONE,
+        -- time from last changelog entry
     ADD COLUMN last_changed_by TEXT -- maintainer name in last changelog entry
   """,
   ])
@@ -173,7 +185,8 @@ DBUpdater().add(6, statements=[
   """,
   """
   ALTER TABLE suite
-    ADD COLUMN components TEXT ARRAY NOT NULL DEFAULT ARRAY['main', 'contrib', 'non-free']
+    ADD COLUMN components
+        TEXT ARRAY NOT NULL DEFAULT ARRAY['main', 'contrib', 'non-free']
   """,
   """
   CREATE TABLE suite_package (
@@ -197,10 +210,15 @@ DBUpdater().add(7, statements=[
     url TEXT NOT NULL,
     web_url TEXT NOT NULL
   )""",
-  "INSERT INTO bug_tracker (name, type, url, web_url) VALUES ('debian', 'debianbts', 'http://bugs.debian.org/cgi-bin/soap.cgi', 'http://bugs.debian.org/')",
+  """
+  INSERT INTO bug_tracker (name, type, url, web_url)
+  VALUES ('debian', 'debianbts', 'http://bugs.debian.org/cgi-bin/soap.cgi',
+    'http://bugs.debian.org/')
+  """,
   """
   CREATE TYPE severity
-    AS ENUM ('wishlist', 'minor', 'normal', 'important', 'serious', 'grave', 'critical')
+    AS ENUM ('wishlist', 'minor', 'normal', 'important',
+      'serious', 'grave', 'critical')
   """,
   """
   CREATE TABLE bug (
@@ -223,7 +241,8 @@ DBUpdater().add(7, statements=[
   )""",
   """
   CREATE OR REPLACE
-    FUNCTION affects (versions debversion[], found debversion[], fixed debversion[])
+    FUNCTION affects (versions debversion[],
+      found debversion[], fixed debversion[])
     RETURNS BOOLEAN
     IMMUTABLE
     STRICT
@@ -248,7 +267,8 @@ DBUpdater().add(7, statements=[
   $function$
   """,
   """
-  COMMENT ON FUNCTION affects (versions debversion[], found debversion[], fixed debversion[])
+  COMMENT ON FUNCTION affects (versions debversion[],
+    debversion[], fixed debversion[])
     IS 'check if a bug found (fixed) in the given versions affects the package with versions "versions"'
   """,
   """
@@ -267,8 +287,10 @@ DBUpdater().add(8, statements=[
   """,
   """
   ALTER TABLE bug_source
-    ADD COLUMN fixed_versions debversion ARRAY NOT NULL DEFAULT ARRAY[]::debversion[],
-    ADD COLUMN found_versions debversion ARRAY NOT NULL DEFAULT ARRAY[]::debversion[]
+    ADD COLUMN fixed_versions debversion
+      ARRAY NOT NULL DEFAULT ARRAY[]::debversion[],
+    ADD COLUMN found_versions debversion
+      ARRAY NOT NULL DEFAULT ARRAY[]::debversion[]
   """,
   ])
 
@@ -339,14 +361,16 @@ DBUpdater().add(12, statements=[
 DBUpdater().add(13, statements=[
   """
   CREATE TABLE watch_result (
-    named_tree_id INT PRIMARY KEY NOT NULL REFERENCES named_tree(id) ON DELETE CASCADE,
+    named_tree_id INT PRIMARY KEY NOT NULL REFERENCES named_tree(id)
+      ON DELETE CASCADE,
     homepage TEXT,
     upstream_version debversion,
     download_url TEXT,
     debian_version debversion, -- mangled Debian version
     error TEXT,
     last_checked TIMESTAMP(0) WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CHECK (error IS NOT NULL != (upstream_version IS NOT NULL AND download_url IS NOT NULL AND debian_version IS NOT NULL))
+    CHECK (error IS NOT NULL != (upstream_version IS NOT NULL AND
+      download_url IS NOT NULL AND debian_version IS NOT NULL))
   )""",
   ])
 
