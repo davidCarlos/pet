@@ -21,6 +21,7 @@ package 'python-popcon'
 
 #installing dependency that has no package on debian
 execute 'pip install pyramid_chameleon'
+execute 'pip install nose'
 execute 'pip install coveralls'
 
 #creating user pet
