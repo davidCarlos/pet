@@ -1,0 +1,61 @@
+language: python
+python:
+  - "2.7"
+
+services:
+  - postgresql
+
+addons:
+  hosts:
+    - bmdb1.debian.org
+
+env:
+  - TPORT=5435
+
+virtualenv:
+  system_site_packages: true
+
+before_install:
+  - sudo apt-get update -qq
+
+install:
+  ### postgres packages
+  - sudo apt-get install postgresql-9.1 postgresql-9.1-debversion
+    postgresql-contrib-9.1
+  ### python packages
+  - sudo apt-get install -qq python-argparse python-debian python-apt
+    python-debianbts python-inotifyx python-paste python-psycopg2 python-pyramid
+    python-sqlalchemy python-subversion python-pip wget
+  ### pip packages
+  - sudo pip install coveralls
+  - sudo pip install flake8 # ubuntu 12 does not have python-flake8 in its repo
+
+before_script:
+  ### postgresql.conf
+  - sudo bash -c "echo 'port = 5435' >> /etc/postgresql/9.1/main/postgresql.conf"
+  ### pg_hba.conf
+  - sudo sed -i -e "1ihost pet pet 127.0.0.1/32 trust" /etc/postgresql/9.1/main/pg_hba.conf
+  ### useradd / restart
+  - sudo useradd pet
+  - sudo service postgresql restart
+  ### create user/db
+  - sudo su postgres -c "createuser -p $TPORT-s -r -d pet &>/dev/null"
+  - sudo su postgres -c "createdb -p $TPORT -O pet pet &>/dev/null"
+  ### debversion.sql
+  - sudo su postgres -c "psql -p $TPORT pet < /usr/share/postgresql/9.1/extension/debversion--1.0.8.sql"
+  ### pet insert
+  - sudo su pet -c "./pet-update -c -nc"
+  - sudo su pet -c "psql -p $TPORT pet --command \"INSERT INTO team (name, maintainer, url) VALUES ('pkg-perl', 'Debian Perl Group <pkg-perl-maintainers@lists.alioth.debian.org>', 'http://pkg-perl.alioth.debian.org/');\""
+  - sudo su pet -c "psql -p $TPORT pet --command \"INSERT INTO repository (name, type, root, web_root, team_id) VALUES ('git','git','https://pet.alioth.debian.org/pet2-data/pkg-perl/git-pkg-perl-packages.json','http://anonscm.debian.org/gitweb/?p=pkg-perl/packages', 1);\""
+
+script:
+  - flake8 . --ignore E121,E501,F401,E712,E711,E123,E241
+  - nosetests --with-coverage --cover-package=pet
+
+after_success: coveralls
+
+branches:
+  only:
+    - master
+notifications:
+  email: false
