@@ -20,6 +20,8 @@ import pet.sql
 
 import argparse
 import sys
+from sqlalchemy.exc import OperationalError
+
 
 parser = argparse.ArgumentParser(
     description='create and update database schema for PET')
@@ -32,5 +34,10 @@ parser.add_argument('-nc', '--no-cert', dest='no_cert', action='store_true',
 
 options = parser.parse_args(sys.argv[1:])
 
-pet.sql.DBUpdater().run(engine=pet.engine(options.no_cert),
-                        create_database=options.create)
+try:
+    pet.sql.DBUpdater().run(engine=pet.engine(options.no_cert),
+                            create_database=options.create)
+except OperationalError:
+    print('No certification file found (/etc/ssl/debian/certs/ca.crt)')
+    print('Use the flag -nc or check the certificate')
+
