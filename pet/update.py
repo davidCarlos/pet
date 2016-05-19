@@ -185,7 +185,7 @@ class NamedTreeUpdater(object):
         self.package = package
         self.vcs = vcs
         self.force = force
-        print "I: updating {0}, {1} {2}".format(
+        print "I:   updating {0}, {1} {2}".format(
             self.package.name, self.named_tree.type, self.named_tree.name)
         self.delete_old_files()
         self.update_patches()
