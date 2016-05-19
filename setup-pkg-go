@@ -59,7 +59,7 @@ pet=> \d+
 (1 row)
 
 INSERT 0 1
-pet=> insert into repository (name, type, root, web_root, team_id) values ('git', 'git-ssh', '/git/pkg-g o/packages', http://anonscm.debian.org/gitweb/?p='http://anonscm.debian.org/gitweb/?p=[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cpkg-go', 12) returning id;
+pet=> insert into repository (name, type, root, web_root, team_id) values ('git', 'git-ssh', '/git/pkg-g o/packages', http://anonscm.debian.org/cgit/'http://anonscm.debian.org/cgit/[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cpkg-go', 12) returning id;
  id 
 ----
  14
