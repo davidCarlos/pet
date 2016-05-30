@@ -26,6 +26,7 @@ import re
 import subprocess
 import sys
 
+
 class Request(object):
     """parse and execute requests
 
@@ -67,7 +68,8 @@ class Request(object):
     def validate_path(self, path):
         re_path = re.compile(r'\A/git/')
         re_path_not = re.compile(r'/\.')
-        if not re_path.search(self.directory) or re_path_not.search(self.directory):
+        if (not re_path.search(self.directory) or
+           re_path_not.search(self.directory)):
             raise Exception("Invalid directory: {0}".format(self.directory))
 
     def validate_filespec(self, filespec):

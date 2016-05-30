@@ -21,21 +21,22 @@ import pet.vcs
 
 import sys
 
+
 def main(argv):
-  session = pet.models.Session()
-  updater = pet.update.PackageUpdater()
+    session = pet.models.Session()
+    updater = pet.update.PackageUpdater()
 
-  for package_name in argv[1:]:
-    packages = session.query(pet.models.Package).filter_by(name=package_name) \
-        .all()
-    for package in packages:
-      repo = package.repository
-      vcs = pet.vcs.vcs_backend(repo)
-      print "I: Updating package {0}".format(package.name)
-      updater.run(package, vcs)
+    for package_name in argv[1:]:
+        packages = session.query(pet.models.Package).filter_by(
+            name=package_name) \
+            .all()
+        for package in packages:
+            repo = package.repository
+            vcs = pet.vcs.vcs_backend(repo)
+            print "I: Updating package {0}".format(package.name)
+            updater.run(package, vcs)
 
-  session.commit()
+    session.commit()
 
 if __name__ == '__main__':
-  main(sys.argv)
-
+    main(sys.argv)

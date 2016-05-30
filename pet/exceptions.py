@@ -13,48 +13,59 @@
 # ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
+
 class PetError(Exception):
-  pass
+    pass
+
 
 # sql.py errors.
 class DatabaseError(PetError):
-  pass
+    pass
+
 
 # bts.py errors.
 class BugTrackerException(PetError):
-  pass
+    pass
+
 
 class BinaryNotKnown(BugTrackerException):
-  """
-  This exception is thrown when we do not know the source package
-  for a given binary package.
-  """
-  pass
+    """
+    This exception is thrown when we do not know the source package
+    for a given binary package.
+    """
+    pass
+
 
 # perlre.py errors.
 class RegexpError(PetError):
-  pass
+    pass
+
 
 # vcs.py errors.
 class VCSException(PetError):
-  pass
+    pass
+
 
 class FileNotFound(VCSException):
-  pass
+    pass
+
 
 # watch.py errors.
 class WatchException(PetError):
-  pass
+    pass
+
 
 class InvalidWatchFile(WatchException):
-  pass
+    pass
+
 
 class NotFound(WatchException):
-  pass
+    pass
+
 
 class DownloadError(WatchException):
-  pass
+    pass
+
 
 class InvalidVersion(WatchException):
-  pass
-
+    pass
