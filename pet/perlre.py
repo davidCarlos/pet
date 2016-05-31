@@ -62,13 +62,14 @@ PATTERN = 0
 REPLACEMENT_MARKER = 1
 REPLACEMENT = 2
 FLAGS = 3
+RE_IGNORECASE = 2
 
 
 def compile(pattern):
     """Compile a regular expression pattern into a regular expression object,
     which can be used for matching using its match() and search() methods."""
     for regex, sub in _pattern_rules:
-        pattern = regex.sub(sub, pattern)
+        pattern = regex.subn(sub, pattern)[0]
     return re.compile(pattern)
 
 
@@ -154,13 +155,13 @@ def flag_decoding(regexp, string):
     py_flags = 0
     for flag in flags:
         if flag == 'i':
-            py_flags |= re.I
+            py_flags |= RE_IGNORECASE
         elif flag == 'g':
             count = 0
         else:
             raise RegexpError(
                 "Unknown flag '{0}' used in regular expression.".format(flags))
-    return count
+    return count, py_flags
 
 
 def regex_in_rules(regexp, string):
@@ -169,19 +170,38 @@ def regex_in_rules(regexp, string):
     pattern = initial_decoding(regexp, string)[0]
     replacement = initial_decoding(regexp, string)[1]
     for regex, sub in _pattern_rules:
-        pattern = regex.sub(sub, pattern)
+        pattern = regex.subn(sub, pattern)[0]
     for regex, sub in _replacement_rules:
-        replacement = regex.sub(sub, replacement)
+        replacement = regex.subn(sub, replacement)[0]
 
     return pattern, replacement
 
 
-def apply_substitute_regex(pattern, replacement, string, count):
+def get_python_version():
+    import sys
+    tuple_python_version = sys.version_info
+    major_version = tuple_python_version[0]
+    return major_version
+
+
+def apply_substitute_regex(regex_rules, string, flags_decode):
     """Apply pattern and replacement on the string and return."""
+    count = flags_decode[0]
+    flags = flags_decode[1]
+
+    pattern = regex_rules[0]
+    replacement = regex_rules[1]
     try:
-        string_regex_applied = re.sub(
-            pattern, replacement, string, count=count
-        )
+        python_version = get_python_version()
+        if python_version >= 3:
+            regex_applied = re.subn(
+                pattern, replacement, string, count=count, flags=flags
+            )
+        else:
+            regex_applied = re.subn(
+                pattern, replacement, string, count=count
+            )
+        string_regex_applied = regex_applied[0]
     except:
         string_regex_applied = string
 
@@ -193,11 +213,10 @@ def apply_perlre(regexp, string):
     empty_regex = not_null_regex(regexp, string)
     if empty_regex:
         operator_matching(regexp, string)
-        pattern = regex_in_rules(regexp, string)[0]
-        replacement = regex_in_rules(regexp, string)[1]
-        count = flag_decoding(regexp, string)
+        regex_rules = regex_in_rules(regexp, string)
+        flags = flag_decoding(regexp, string)
         string_regex_applied = apply_substitute_regex(
-            pattern, replacement, string, count
+            regex_rules, string, flags
         )
     else:
         string_regex_applied = string
