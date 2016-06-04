@@ -35,7 +35,13 @@
 	    </span>
 	  </span>
 	  <span tal:condition="not p.is_tagged" class="popup repo-unrel">
-	    <a tal:attributes="href p.named_tree.link('debian/changelog')">(${p.version})</a>
+	    <a tal:define="highlight_red 'higher_archive' if p.version < p.highest_archive.version else '';"
+          tal:attributes="href p.named_tree.link('debian/changelog'); class string:$highlight_red">
+          (${p.version})
+          <a class = "lower_repo">
+            This package has a <b>lower version</b> on the repository than in the archive.
+          </a>
+      </a>
 	    <span id="${p.named_tree.id}_rel_chlog_balloon" class="balloon">
 	      <a href="javascript:async_get('${p.named_tree.id}_rel_chlog_balloon', '${view.changelog_url(p.named_tree)}')">${p.last_changed_by} &mdash; ${p.last_changed}</a>
 	    </span>
@@ -43,8 +49,16 @@
 	</td>
 	<td>
 	  <!-- archive status -->
-	  <a tal:condition="p.suite_packages" href="http://packages.qa.debian.org/${p.source}">${p.highest_archive.version}</a>
-	</td>
+    <a tal:define="box_info 'higher_repo' if p.highest_archive.version < p.version else '';"
+        tal:condition="p.suite_packages"
+        tal:attributes="class string:$box_info"
+        href="http://packages.qa.debian.org/${p.source}">
+        ${p.highest_archive.version}
+        <a class="different_version">
+          This package has a different version on its repository
+        </a>
+      </a>
+  </td>
 	<td tal:attributes="class not p.todo_bugs or 'todo'">
 	  <!-- bug tracking -->
 	  <div tal:condition="p.bugs" class="bts-info popup" style="text-align: center">
