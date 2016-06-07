@@ -66,3 +66,6 @@ docs/_build/
 *.swp
 
 .vagrant/
+
+# Json to store packages of ci_debian info
+packages.json
