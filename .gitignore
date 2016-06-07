@@ -67,3 +67,6 @@ docs/_build/
 
 .vagrant/
 nodes/vagrant*
+
+# Json to store packages of ci_debian info
+packages.json

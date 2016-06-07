@@ -40,6 +40,7 @@ class ClassifiedPackage(object):
     last_changed_by = property(lambda self: self.named_tree.last_changed_by)
     last_changed = property(lambda self: self.named_tree.last_changed)
     todo = property(lambda self: self.named_tree.todo)
+    status = property(lambda self: self.named_tree.status)
 
     @property
     def has_rc_bugs(self):
@@ -197,6 +198,11 @@ class Classifier(object):
                 cls = 'wip'
             else:
                 cls = 'other'
+
+            if p.named_tree.status == "fail".decode('unicode-escape'):
+                p.named_tree.status = True
+            else:
+                p.named_tree.status = False
 
             package_popcon = popcon.package(p.name)
             if package_popcon:

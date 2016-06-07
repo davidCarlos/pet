@@ -51,7 +51,7 @@ class Overview(object):
 
         return {
             "classified": classifier.classify(),
-            "classes": classifier.classes()
+            "classes": classifier.classes(),
         }
 
 

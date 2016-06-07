@@ -15,6 +15,7 @@
 
 from pyramid.config import Configurator
 from pyramid.events import subscriber, NewRequest
+import pet.ci
 
 from pet.models import Session
 
@@ -31,6 +32,7 @@ def add_session_to_request(event):
 def main(global_config=None, **settings):
     # settings.update({
     # })
+    pet.ci.update_ci_status()
     config = Configurator(settings=settings)
     config.include('pyramid_chameleon')
     config.add_static_view('static', 'pet.web:static')
