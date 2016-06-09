@@ -14,6 +14,8 @@ package 'python-sqlalchemy'
 package 'python-subversion'
 package 'python-pip'
 package 'wget'
+package 'python-mock'
+package 'python-nose'
 
 #installing dependency that has no package on debian
 execute 'pip install pyramid_chameleon'
