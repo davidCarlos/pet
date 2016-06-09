@@ -1,5 +1,5 @@
-[![CoverageStatus](https://coveralls.io/repos/github/PET-UnB/pet/badge.svg?branch=travis)](https://coveralls.io/github/PET-UnB/pet?branch=travis)
-[![BuildStatus](https://travis-ci.org/PET-UnB/pet.svg?branch=travis)](https://travis-ci.org/PET-UnB/pet.svg?branch=travis)
+[![CoverageStatus](https://coveralls.io/repos/github/PET-UnB/pet/badge.svg?branch=master)](https://coveralls.io/github/PET-UnB/pet?branch=master)
+[![BuildStatus](https://travis-ci.org/PET-UnB/pet.svg?branch=master)](https://travis-ci.org/PET-UnB/pet.svg?branch=master)
 
 # PET - Package Entropy Tracker
 

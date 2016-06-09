@@ -19,6 +19,7 @@ package 'python-nose'
 
 #installing dependency that has no package on debian
 execute 'pip install pyramid_chameleon'
+execute 'pip install coveralls'
 
 #creating user pet
 user 'pet' do
