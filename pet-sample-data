@@ -1,0 +1,11 @@
+#! /usr/bin/env python
+
+import pet
+
+engine = pet.engine(True)
+
+con = engine.connect()
+
+con.execute("""insert into named_tree (id,package_id,type,commit_id) values (4568,3226,'branch','ausdausdhasudausdhausdu');""")
+
+con.close()
