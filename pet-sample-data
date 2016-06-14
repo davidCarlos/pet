@@ -6,6 +6,8 @@ engine = pet.engine(True)
 
 con = engine.connect()
 
-con.execute("""insert into named_tree (id,package_id,type,commit_id) values (4568,3226,'branch','ausdausdhasudausdhausdu');""")
+con.execute("""insert into package (name, repository_id,id) values ('pkg-with-rc-bug',1,4567);""")
+con.execute("""insert into named_tree (id,package_id,type,commit_id) values (4567,4567,'branch','ausdausdhasudausdhausdu');""")
+#con.execute("""insert into named_tree (id,package_id,type,commit_id) values (4568,3226,'branch','ausdausdhasudausdhausdu');""")
 
 con.close()
