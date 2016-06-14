@@ -1,99 +1,157 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-  <!--
-  Copyright 2011, Ansgar Burchardt <ansgar@debian.org>
+  <head>
+    <!--
+    Copyright 2011, Ansgar Burchardt <ansgar@debian.org>
 
-  Based on templates written for the initial version of PET which are
+    Based on templates written for the initial version of PET which are
 
-  Copyright 2007, Martín Ferrari <martin.ferrari@gmail.com>
-  Copyright 2007, Damyan Ivanov <dmn@debian.org>
+    Copyright 2007, Martín Ferrari <martin.ferrari@gmail.com>
+    Copyright 2007, Damyan Ivanov <dmn@debian.org>
 
-  Released under the terms of the GNU GPL 2
+    Released under the terms of the GNU GPL 2
   -->
   <title>Package Entropy Tracker</title>
   <link rel="stylesheet" type="text/css" href="/static/default.css"></link>
+  <link rel="stylesheet" type="text/css" href="/static/debian.css"></link>
   <script type="text/javascript" src="/static/overview.js"></script>
 </head>
 <body>
-  <h1>Package Entropy Tracker</h1>
+  <p class="hidecss">
+    <!--
+    Skip navigation for text only browsers
+  -->
+  <a href="#content">Skip Navigation</a></p>
+
+  <div id="header">
+    <div id="upperheader">
+      <div id="logo">
+        <!--
+        Do not change the link or logo
+      -->
+      <a href="./pet.cgi" title="Debian Home"><img src= "/static/img/openlogo-50.png"
+        alt="Debian" width="50" height= "61"></a>
+      </div>
+
+      <p class="section">
+        <!--
+        The section flag should be the site name highlighting the potential
+        change of top nav links
+      -->
+      package entropy tracker</p>
+
+
+    </div><!-- end upperheader -->
+
+    <div id="navbar">
+      <!--
+      The navbar links below can be changed to site specific links.
+    -->
+    <ul>
+      <li><a href="http://www.debian.org/intro/about">About Debian</a></li>
+
+      <li><a href="http://www.debian.org/distrib/">Getting Debian</a></li>
+
+      <li><a href="http://www.debian.org/support">Support</a></li>
+
+      <li><a href="http://www.debian.org/devel/">Developers'&nbsp;Corner</a></li>
+    </ul>
+  </div><!-- end navbar -->
+
+  <p id="breadcrumbs">
+    <!--
+    The breadcrumbs should always start with a slash followed by of the
+    sub-domain name. Try to make your back end produce correct breadcrumbs
+    Always leave one space between the slash and the link.
+  -->
+  <a href="http://google.com/">Documentation</a>
+</p>
+
+</div><!-- end header -->
+
+<br>
+
   <table id="main_table">
-<div tal:repeat="cl classes" tal:omit-tag=""><div tal:condition="cl.key in classified" tal:omit-tag="">
-    <thead>
-      <tr><th colspan="5" class="clickable"><a style="display: block" href="javascript:toggle_visibility('${cl.key}')">${cl.name} (${len(classified[cl.key])})</a></th></tr>
-    </thead>
-    <tbody tal:attributes="id cl.key">
-      <tr><th>Package</th><th>Repository</th><th>Archive</th><th>Bugs</th><th>Upstream</th></tr>
-      <tr tal:repeat="p classified[cl.key]">
-	<td tal:content="p.name">a-package</td>
-	<td tal:attributes="class (p.ready_for_upload or p.todo) and 'todo'">
-	  <!-- repository status -->
-	  <span tal:condition="p.highest_tag" class="popup repo-rel">
-	    <a tal:content="p.highest_tag.version" tal:attributes="href p.highest_tag.link('debian/changelog')">0.1-1</a>
-	    <span id="${p.highest_tag.id}_rel_chlog_balloon" class="balloon">
-	      <a href="javascript:async_get('${p.highest_tag.id}_rel_chlog_balloon', '${view.changelog_url(p.highest_tag)}')">${p.highest_tag.last_changed_by} &mdash; ${p.highest_tag.last_changed}</a>
-	    </span>
-	  </span>
-	  <span tal:condition="not p.is_tagged" class="popup repo-unrel">
-      <a tal:condition="p.suite_packages">
-  	    <a tal:define="highlight_red 'higher_archive' if p.version < p.highest_archive.version else '';
-                       box_info 'higher_repo' if p.version > p.highest_archive.version else '';"
-            tal:attributes="href p.named_tree.link('debian/changelog'); class string:$highlight_red $box_info">
-            (${p.version})
-          <a class = "lower_repo">
-            This package has a <b>lower version</b> on the repository than in the archive.
-          </a>
-        </a>
-      </a>
-      <a tal:condition="not p.suite_packages">
-        <a tal:attributes="href p.named_tree.link('debian/changelog')">(${p.version})</a>
-      </a>
-	    <span id="${p.named_tree.id}_rel_chlog_balloon" class="balloon">
-	      <a href="javascript:async_get('${p.named_tree.id}_rel_chlog_balloon', '${view.changelog_url(p.named_tree)}')">${p.last_changed_by} &mdash; ${p.last_changed}</a>
-	    </span>
-	  </span>
-	</td>
-	<td>
-	  <!-- archive status -->
-    <a tal:condition="p.suite_packages"
-        href="http://packages.qa.debian.org/${p.source}">${p.highest_archive.version}
-    </a>
-  </td>
-	<td tal:attributes="class not p.todo_bugs or 'todo'">
-	  <!-- bug tracking -->
-	  <div tal:condition="p.bugs" class="bts-info popup" style="text-align: center">
-	    <a href="http://bugs.debian.org/src:${p.source}" tal:content="len(p.bugs)">7</a>
-	    <table class="bts-info-details balloon">
-	      <tr tal:repeat="b p.bugs">
-		<td>
-		  <a class="bts-${b.severity}" href="http://bugs.debian.org/${b.bug_number}">#${b.bug_number}</a>
-		  <div tal:condition="b.forwarded" class="bts-forwarded">
-		      <a tal:attributes="href b.forwarded" href="http://rt.cpan.org/">forwarded</a>
-		  </div>
-		  <div tal:condition="b.tags" class="bts-keywords">
-		      <span tal:repeat="tag b.tags" tal:omit-tag="1">
-			  <span tal:replace="tag">tag</span><span tal:omit-tag="1" tal:condition="not repeat.tag.end">, </span>
-		      </span>
-		  </div>
-		</td>
-		<td tal:content="b.subject">It doesn't work!</td>
-	      </tr>
-	    </table>
-	  </div>
-	</td>
-	<td>
-	  <!-- upstream status -->
-	  <div tal:condition="p.watch" tal:omit-tag="">
-	    <a tal:condition="p.watch.download_url" tal:attributes="href p.watch.download_url">${p.watch.upstream_version}</a>
-	    <span tal:condition="p.watch.error" tal:replace="p.watch.error"/>
-	    <a tal:condition="p.watch.homepage" tal:attributes="href p.watch.homepage">(Browse)</a>
-	  </div>
-	</td>
-      </tr>
-    </tbody>
-</div></div>
+    <div tal:repeat="cl classes" tal:omit-tag=""><div tal:condition="cl.key in classified" tal:omit-tag="">
+      <thead>
+        <tr><th colspan="5" class="clickable"><a style="display: block" href="javascript:toggle_visibility('${cl.key}')">${cl.name} (${len(classified[cl.key])})</a></th></tr>
+      </thead>
+      <tbody tal:attributes="id cl.key">
+        <tr><th>Package</th><th>Repository</th><th>Archive</th><th>Bugs</th><th>Upstream</th></tr>
+        <tr tal:repeat="p classified[cl.key]">
+          <td tal:content="p.name">a-package</td>
+          <td tal:attributes="class (p.ready_for_upload or p.todo) and 'todo'">
+            <!-- repository status -->
+            <span tal:condition="p.highest_tag" class="popup repo-rel">
+              <a tal:content="p.highest_tag.version" tal:attributes="href p.highest_tag.link('debian/changelog')">0.1-1</a>
+              <span id="${p.highest_tag.id}_rel_chlog_balloon" class="balloon">
+                <a href="javascript:async_get('${p.highest_tag.id}_rel_chlog_balloon', '${view.changelog_url(p.highest_tag)}')">${p.highest_tag.last_changed_by} &mdash; ${p.highest_tag.last_changed}</a>
+              </span>
+            </span>
+            <span tal:condition="not p.is_tagged" class="popup repo-unrel">
+              <a tal:condition="p.suite_packages">
+                <a tal:define="highlight_red 'higher_archive' if p.version < p.highest_archive.version else '';
+                  box_info 'higher_repo' if p.version > p.highest_archive.version else '';"
+                  tal:attributes="href p.named_tree.link('debian/changelog'); class string:$highlight_red $box_info">
+                  (${p.version})
+                  <a class = "lower_repo">
+                    This package has a <b>lower version</b> on the repository than in the archive.
+                  </a>
+                </a>
+              </a>
+              <a tal:condition="not p.suite_packages">
+                <a tal:attributes="href p.named_tree.link('debian/changelog')">(${p.version})</a>
+              </a>
+              <span id="${p.named_tree.id}_rel_chlog_balloon" class="balloon">
+                <a href="javascript:async_get('${p.named_tree.id}_rel_chlog_balloon', '${view.changelog_url(p.named_tree)}')">${p.last_changed_by} &mdash; ${p.last_changed}</a>
+              </span>
+            </span>
+          </td>
+          <td>
+            <!-- archive status -->
+            <a tal:condition="p.suite_packages"
+              href="http://packages.qa.debian.org/${p.source}">${p.highest_archive.version}
+            </a>
+          </td>
+          <td tal:attributes="class not p.todo_bugs or 'todo'">
+            <!-- bug tracking -->
+            <div tal:condition="p.bugs" class="bts-info popup" style="text-align: center">
+              <a href="http://bugs.debian.org/src:${p.source}" tal:content="len(p.bugs)">7</a>
+              <table class="bts-info-details balloon">
+                <tr tal:repeat="b p.bugs">
+                  <td>
+                    <a class="bts-${b.severity}" href="http://bugs.debian.org/${b.bug_number}">#${b.bug_number}</a>
+                    <div tal:condition="b.forwarded" class="bts-forwarded">
+                      <a tal:attributes="href b.forwarded" href="http://rt.cpan.org/">forwarded</a>
+                    </div>
+                    <div tal:condition="b.tags" class="bts-keywords">
+                      <span tal:repeat="tag b.tags" tal:omit-tag="1">
+                        <span tal:replace="tag">tag</span><span tal:omit-tag="1" tal:condition="not repeat.tag.end">, </span>
+                      </span>
+                    </div>
+                  </td>
+                  <td tal:content="b.subject">It doesn't work!</td>
+                </tr>
+              </table>
+            </div>
+          </td>
+          <td>
+            <!-- upstream status -->
+            <div tal:condition="p.watch" tal:omit-tag="">
+              <a tal:condition="p.watch.download_url" tal:attributes="href p.watch.download_url">${p.watch.upstream_version}</a>
+              <span tal:condition="p.watch.error" tal:replace="p.watch.error"/>
+              <a tal:condition="p.watch.homepage" tal:attributes="href p.watch.homepage">(Browse)</a>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </div></div>
   </table>
 
-<p style="text-align: center"><a href="http://anonscm.debian.org/cgit/pet/pet3.git">source code</a> - <a href="mailto:pet-devel@lists.alioth.debian.org">contact</a></p>
 </body>
 </html>
+<div id="footer">
+  <p style="text-align: center">To report a problem with the web site, <a href="mailto:pet-devel@lists.alioth.debian.org">e-mail</a> us.</p>
+  <p style="text-align: center">Web site source code is <a href="http://anonscm.debian.org/cgit/pet/pet3.git">available</a>.</p>
+  <p style="text-align: center">Debian is a registered <a href="https://www.debian.org/trademark">trademark</a> of Software in the Public Interest, Inc.</p>
+</div>
