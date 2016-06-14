@@ -1,0 +1,15 @@
+#! /bin/sh
+# -*- shell-script -*-
+
+stop() {
+    echo "Stopping pet..."
+    pids=`ps ax | grep pet  | awk '{print $1}'`
+    if [ -z "$pids" ] ; then
+       echo "pet is not running"
+    else
+        for pid in $pids; do
+            echo "killing " $pid
+            kill $pid
+        done
+    fi
+  }

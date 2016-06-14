@@ -1,0 +1,9 @@
+[Unit]
+Description=Package Entrophy Tracker
+
+[Service]
+ExecStart=/srv/pet.debian.net/pet-serve
+ExecStop=/srv/pet.debian.net/pet-service stop
+
+[Install]
+WantedBy=default.target
