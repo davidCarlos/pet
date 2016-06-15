@@ -232,10 +232,13 @@ a.lower_repo{
 a.different_version{
     position:absolute;
     display:none;
+    min-width: 20em;
+    max-width: 37.6em;
+    max-height: 75%;
     color:#000;
     background: #F5F5B5;
     overflow: auto;
-    margin: 0em 0 0 -10em;
+    margin: 2.7em 0 0 -10em;
     padding: 0.5em;
     border: 2px solid #F5F5B5;     /* light yellowish */
     border-radius: 6px;
@@ -248,7 +251,7 @@ a.different_version{
     box-shadow: 3px 3px 6px #555;
 }
 
-a.higher_archive:hover + a.lower_repo, a.higher_repo:hover + a.different_version {
+a.higher_archive:hover + a.lower_repo {
     display:block !important;
     z-index:10;
 }
