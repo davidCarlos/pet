@@ -7,7 +7,12 @@ engine = pet.engine(True)
 con = engine.connect()
 
 con.execute("""insert into package (name, repository_id,id) values ('pkg-with-rc-bug',1,4567);""")
-con.execute("""insert into named_tree (id,package_id,type,commit_id) values (4567,4567,'branch','ausdausdhasudausdhausdu');""")
+con.execute("""insert into named_tree (id,package_id,type,commit_id,source) values (4567,4567,'branch','ausdausdhasudausdhausdu','pkg-with-rc-bug');""")
+con.execute("""insert into named_tree (id,package_id,type,commit_id,name) values (4569,4567,'tag','ausdausdhasudausdhausdu','refs/tags/upstream/1.44');""")
+con.execute("""insert into named_tree (id,package_id,type,commit_id,name) values (4570,4567,'tag','ausdausdhasudausdhausdu','refs/tags/debian/1.44');""")
+con.execute("""insert into named_tree (id,package_id,type,name,commit_id,source,maintainer,uploaders,homepage,source_changelog,version,distribution,urgency,last_changed,last_changed_by,versions,ignore,todo) values (4571,4567,'branch','','asdasdasdasdasdasdasd','pkg-with-rc-bug','Debian Perl Group <pkg-perl-maintainers@lists.alioth.debian.org>','{"test <test@email.com>"}','https://test.com','pkg-with-rc-bug','1.44-4','UNRELEASED','medium','2016-01-30 19:06:22+00','test <test@email.com>','{1.44-4,1.44-3,1.44-2,1.44-1}','f','f');""")
+con.execute("""insert into bug (id,bug_tracker_id,bug_number,done,severity,tags,subject,submitter,created,owner,forwarded,blocks,blocked_by,last_modified) values (4567,1,4567,'f','serious','{upstream}','bug example','submitter<email@email.com>', '2016-05-21 11:00:05', '','https://test','{}','{}','2016-05-22 11:00:05');""")
+con.execute("""insert into bug_source (bug_id,source,fixed_versions,found_versions) values (4567,'pkg-with-rc-bug','{}','{}');""")
 #con.execute("""insert into named_tree (id,package_id,type,commit_id) values (4568,3226,'branch','ausdausdhasudausdhausdu');""")
 
 con.close()
