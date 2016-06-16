@@ -17,11 +17,15 @@
 
 import pet.models
 import pet.update
+import pet.ci_debian_packages
 
 import sys
 
 
 def main(argv):
+    number_of_updates = pet.ci_debian_packages.update_ci_status()
+    print "%s number of status of packates updateded" % number_of_updates
+
     session = pet.models.Session()
     for archive_name in argv[1:]:
         archives = session.query(pet.models.Archive).filter_by(

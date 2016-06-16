@@ -386,6 +386,7 @@ DBUpdater().add(14, statements=[
 DBUpdater().add(15, statements=[
   """
   ALTER TABLE named_tree
-    ADD COLUMN todo BOOLEAN NOT NULL DEFAULT 'f'
+    ADD COLUMN todo BOOLEAN NOT NULL DEFAULT 'f',
+    ADD COLUMN status TEXT
   """,
   ])
