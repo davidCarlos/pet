@@ -13,7 +13,7 @@ def update_ci_status():
 
     count_changed_packtes = 0
     for row in result:
-        if row.source != "":
+        if row.source is not None:
             print row.source
             status = found_on_json(row.source)
             if status is not False:
@@ -25,9 +25,11 @@ def update_ci_status():
 def change_status(row, status):
     engine = pet.engine(True)
     connection_instance = engine.connect()
-    script_sql = "update named_tree set status=%s where id=%s" \
+
+    script_sql = "update named_tree set status='%s' where id=%s" \
         % (status, row.id)
     status = connection_instance.execute(script_sql)
+
     connection_instance.close()
 
 
