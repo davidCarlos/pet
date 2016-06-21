@@ -48,8 +48,12 @@ def get_packages_from_url():
         print "Downloading json file with ci debian status..."
         request_of_ci_debian = requests.get(url)
         file_ci_debian = request_of_ci_debian.content
-        open("packages.json", 'wb').write(file_ci_debian)
+        file_status = open("packages.json", 'w')
+        file_status.write(file_ci_debian)
+        file_status.close()
     except IOError:
+        print "File package.json coundn't open"
+    except:
         print "Coundn't acess json of packages on url: ", url
 
 
