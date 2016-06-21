@@ -11,15 +11,15 @@ def update_ci_status():
     result = connection_instance.execute("select * from named_tree")
     connection_instance.close()
 
-    count_changed_packtes = 0
+    count_changed_packages = 0
     for row in result:
         if row.source is not None:
-            print row.source
             status = found_on_json(row.source)
             if status is not False:
-                count_changed_packtes += 1
+                print row.source
+                count_changed_packages += 1
                 change_status(row, status)
-    return count_changed_packtes
+    return count_changed_packages
 
 
 def change_status(row, status):
@@ -45,6 +45,7 @@ def found_on_json(source):
 def get_packages_from_url():
     url = "https://ci.debian.net/data/status/unstable/amd64/packages.json"
     try:
+        print "Downloading json file with ci debian status..."
         request_of_ci_debian = requests.get(url)
         file_ci_debian = request_of_ci_debian.content
         open("packages.json", 'wb').write(file_ci_debian)
@@ -58,6 +59,7 @@ def get_ci_debian_json():
     try:
         packages_status = open('packages.json')
         data = json.load(packages_status)
+        # packages_status.close()
     except IOError:
         get_packages_from_url()
         data = get_ci_debian_json()

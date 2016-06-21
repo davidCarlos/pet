@@ -77,7 +77,7 @@
         <tr><th colspan="5" class="clickable"><a style="display: block" href="javascript:toggle_visibility('${cl.key}')">${cl.name} (${len(classified[cl.key])})</a></th></tr>
       </thead>
       <tbody tal:attributes="id cl.key">
-        <tr><th>Package</th><th>Repository</th><th>Archive</th><th>Bugs</th><th>Upstream</th></tr>
+          <tr><th>Package</th><th>Repository</th><th>Archive</th><th>Status</th><th>Bugs</th><th>Upstream</th></tr>
         <tr tal:repeat="p classified[cl.key]">
           <td tal:content="p.name">a-package</td>
           <td tal:attributes="class (p.ready_for_upload or p.todo) and 'todo'">
@@ -113,6 +113,10 @@
               href="http://packages.qa.debian.org/${p.source}">${p.highest_archive.version}
             </a>
           </td>
+          <td>
+              <a tal:condition="p.status">${p.status}</a>
+              <a tal:condition="not p.status">Not found</a>
+          </td>
           <td tal:attributes="class not p.todo_bugs or 'todo'">
             <!-- bug tracking -->
             <div tal:condition="p.bugs" class="bts-info popup" style="text-align: center">
@@ -146,66 +150,6 @@
         </tr>
       </tbody>
     </div></div>
-<div tal:repeat="cl classes" tal:omit-tag=""><div tal:condition="cl.key in classified" tal:omit-tag="">
-    <thead>
-      <tr><th colspan="5" class="clickable"><a style="display: block" href="javascript:toggle_visibility('${cl.key}')">${cl.name} (${len(classified[cl.key])})</a></th></tr>
-    </thead>
-    <tbody tal:attributes="id cl.key">
-      <tr><th>Package</th><th>Repository</th><th>Archive</th><th>Bugs</th><th>Upstream</th></tr>
-      <tr tal:repeat="p classified[cl.key]">
-	<td tal:content="p.name">a-package</td>
-	<td tal:attributes="class (p.ready_for_upload or p.todo) and 'todo'">
-	  <!-- repository status -->
-	  <span tal:condition="p.highest_tag" class="popup repo-rel">
-      <a tal:content="p.highest_tag.version" tal:attributes="href p.highest_tag.link('debian/changelog')">0.1-1</a>
-	    <span id="${p.highest_tag.id}_rel_chlog_balloon" class="balloon">
-	      <a href="javascript:async_get('${p.highest_tag.id}_rel_chlog_balloon', '${view.changelog_url(p.highest_tag)}')">${p.highest_tag.last_changed_by} &mdash; ${p.highest_tag.last_changed}</a>
-	    </span>
-	  </span>
-	  <span tal:condition="not p.is_tagged" class="popup repo-unrel">
-	    <a tal:attributes="href p.named_tree.link('debian/changelog')">(${p.version})</a>
-	    <span id="${p.named_tree.id}_rel_chlog_balloon" class="balloon">
-	      <a href="javascript:async_get('${p.named_tree.id}_rel_chlog_balloon', '${view.changelog_url(p.named_tree)}')">${p.last_changed_by} &mdash; ${p.last_changed}</a>
-	    </span>
-	  </span>
-	</td>
-	<td>
-	  <!-- archive status -->
-	  <a tal:condition="p.suite_packages" href="http://packages.qa.debian.org/${p.source}">${p.highest_archive.version}</a>
-	</td>
-	<td tal:attributes="class not p.todo_bugs or 'todo'">
-	  <!-- bug tracking -->
-	  <div tal:condition="p.bugs" class="bts-info popup" style="text-align: center">
-	    <a href="http://bugs.debian.org/src:${p.source}" tal:content="len(p.bugs)">7</a>
-	    <table class="bts-info-details balloon">
-	      <tr tal:repeat="b p.bugs">
-		<td>
-		  <a class="bts-${b.severity}" href="http://bugs.debian.org/${b.bug_number}">#${b.bug_number}</a>
-		  <div tal:condition="b.forwarded" class="bts-forwarded">
-		      <a tal:attributes="href b.forwarded" href="http://rt.cpan.org/">forwarded</a>
-		  </div>
-		  <div tal:condition="b.tags" class="bts-keywords">
-		      <span tal:repeat="tag b.tags" tal:omit-tag="1">
-			  <span tal:replace="tag">tag</span><span tal:omit-tag="1" tal:condition="not repeat.tag.end">, </span>
-		      </span>
-		  </div>
-		</td>
-		<td tal:content="b.subject">It doesn't work!</td>
-	      </tr>
-	    </table>
-	  </div>
-	</td>
-	<td>
-	  <!-- upstream status -->
-	  <div tal:condition="p.watch" tal:omit-tag="">
-	    <a tal:condition="p.watch.download_url" tal:attributes="href p.watch.download_url">${p.watch.upstream_version}</a>
-	    <span tal:condition="p.watch.error" tal:replace="p.watch.error"/>
-	    <a tal:condition="p.watch.homepage" tal:attributes="href p.watch.homepage">(Browse)</a>
-	  </div>
-	</td>
-      </tr>
-    </tbody>
-</div></div>
   </table>
 
 </body>

@@ -49,12 +49,10 @@ class Overview(object):
         bt_cond = "1=1"
 
         classifier = Classifier(self.session, named_trees, suite_cond, bt_cond)
-        ci_debian = get_ci_debian_json()
 
         return {
             "classified": classifier.classify(),
             "classes": classifier.classes(),
-            "ci_debian": ci_debian,
         }
 
 
