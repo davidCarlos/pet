@@ -25,7 +25,7 @@ install:
   ### python packages
   - sudo apt-get install -qq python-argparse python-debian python-apt
     python-debianbts python-inotifyx python-paste python-psycopg2 python-pyramid
-    python-sqlalchemy python-subversion python-pip wget
+    python-sqlalchemy python-subversion python-pip wget python-popcon
   ### pip packages
   - sudo pip install coveralls
   - sudo pip install flake8 # ubuntu 12 does not have python-flake8 in its repo

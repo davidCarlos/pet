@@ -134,6 +134,7 @@ To access it: <a href="http://localhost:4567/pkg-perl/pet.cgi">http://localhost:
   <li> python-pyramid
   <li> python-sqlalchemy
   <li> python-subversion
+  <li> python-popcon
   <li> wget
 </ul>
 </p>
