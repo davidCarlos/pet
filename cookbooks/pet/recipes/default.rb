@@ -16,6 +16,8 @@ package 'python-pip'
 package 'wget'
 package 'python-mock'
 package 'python-nose'
+package 'git'
+package 'python-popcon'
 
 #installing dependency that has no package on debian
 execute 'pip install pyramid_chameleon'

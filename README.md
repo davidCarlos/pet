@@ -55,6 +55,7 @@ Install this softwares according to your operation system:
 * python-sqlalchemy
 * python-subversion
 * wget
+* python-popcon
 
 ### Quick Start
 **As root (waiting for python-pyramid-chameleon package**, https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=785048):
