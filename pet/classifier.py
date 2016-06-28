@@ -178,6 +178,7 @@ class Classifier(object):
     def classify(self):
         classified = dict()
         ordered_packages = PriorityQueue()
+        has_no_popcon = []
         for p in self.packages:
             if p.ready_for_upload:
                 cls = 'ready_for_upload'
@@ -201,8 +202,13 @@ class Classifier(object):
             package_popcon = popcon.package(p.name)
             if package_popcon:
                 ordered_packages.put((-package_popcon[p.name], cls, p))
+            else:
+                has_no_popcon.append((cls, p))
         while ordered_packages.empty() is False:
             _, cls, package = ordered_packages.get()
+            classified.setdefault(cls, []).append(package)
+
+        for cls, package in has_no_popcon:
             classified.setdefault(cls, []).append(package)
 
         return classified
