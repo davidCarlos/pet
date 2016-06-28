@@ -18,6 +18,12 @@ from pet.models import NamedTree, Package, Bug, BugSource, SuitePackage
 import apt_pkg
 import sqlalchemy
 import sqlalchemy.orm
+import popcon
+
+try:
+    from queue import PriorityQueue
+except ImportError:
+    from Queue import PriorityQueue
 
 
 class ClassifiedPackage(object):
@@ -171,6 +177,7 @@ class Classifier(object):
 
     def classify(self):
         classified = dict()
+        ordered_packages = PriorityQueue()
         for p in self.packages:
             if p.ready_for_upload:
                 cls = 'ready_for_upload'
@@ -190,7 +197,14 @@ class Classifier(object):
                 cls = 'wip'
             else:
                 cls = 'other'
-            classified.setdefault(cls, []).append(p)
+
+            package_popcon = popcon.package(p.name)
+            if package_popcon:
+                ordered_packages.put((-package_popcon[p.name], cls, p))
+        while ordered_packages.empty() is False:
+            _, cls, package = ordered_packages.get()
+            classified.setdefault(cls, []).append(package)
+
         return classified
 
     def classes(self):
