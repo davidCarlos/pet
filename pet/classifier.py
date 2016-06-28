@@ -175,7 +175,8 @@ class Classifier(object):
                 nt, bugs.get(nt.source, []), suite_packages.get(nt.source, []),
                 tags.get(nt.package_id, [])))
 
-    def order_packages_by_popcon(self, packages):
+    @classmethod
+    def order_packages_by_popcon(cls, packages):
         has_no_popcon = []
         packages_queue = PriorityQueue()
         for package in packages:
@@ -198,7 +199,7 @@ class Classifier(object):
         return ordered_packages
 
     def classify(self):
-        self.packages = self.order_packages_by_popcon(self.packages)
+        self.packages = Classifier.order_packages_by_popcon(self.packages)
         classified = dict()
         for package in self.packages:
             if package.ready_for_upload:
