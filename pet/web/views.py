@@ -81,3 +81,8 @@ def notify(request):
     with open(os.path.join(path, 'update-{0}'.format(repo_id)), 'w') as fh:
         print >>fh, 'requested-by: {0}'.format(request.remote_addr)
     return Response('Ok.')
+
+
+@view_config(route_name="documentation", renderer="pet.web:templates/documentation.pt")
+def notify(request):
+        return {}

@@ -1,0 +1,222 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <!--
+    Copyright 2011, Ansgar Burchardt <ansgar@debian.org>
+
+    Based on templates written for the initial version of PET which are
+
+    Copyright 2007, Martín Ferrari <martin.ferrari@gmail.com>
+    Copyright 2007, Damyan Ivanov <dmn@debian.org>
+
+    Released under the terms of the GNU GPL 2
+  -->
+  <title>Package Entropy Tracker</title>
+  <link rel="stylesheet" type="text/css" href="/static/default.css"></link>
+  <link rel="stylesheet" type="text/css" href="/static/debian.css"></link>
+  <script type="text/javascript" src="/static/overview.js"></script>
+</head>
+
+<body>
+  <p class="hidecss">
+    <!--
+    Skip navigation for text only browsers
+  -->
+  <a href="#content">Skip Navigation</a></p>
+
+  <div id="header">
+    <div id="upperheader">
+      <div id="logo">
+        <!--
+        Do not change the link or logo
+      -->
+      <a href="https://www.debian.org/" title="Debian Home"><img src= "/static/img/openlogo-50.png"
+        alt="Debian" width="50" height= "61"></a>
+      </div>
+
+      <p class="section">
+        <!--
+        The section flag should be the site name highlighting the potential
+        change of top nav links
+      -->
+      <a href="./pkg-perl/pet.cgi"> package entropy tracker </a>
+      </p>
+
+
+    </div><!-- end upperheader -->
+
+    <div id="navbar">
+      <!--
+      The navbar links below can be changed to site specific links.
+    -->
+    <ul>
+      <li><a href="http://www.debian.org/intro/about">About Debian</a></li>
+
+      <li><a href="http://www.debian.org/distrib/">Getting Debian</a></li>
+
+      <li><a href="http://www.debian.org/support">Support</a></li>
+
+      <li><a href="http://www.debian.org/devel/">Developers'&nbsp;Corner</a></li>
+    </ul>
+  </div><!-- end navbar -->
+
+  <p id="breadcrumbs">
+    <!--
+    The breadcrumbs should always start with a slash followed by of the
+    sub-domain name. Try to make your back end produce correct breadcrumbs
+    Always leave one space between the slash and the link.
+  -->
+  <a href="/documentation">Documentation</a>
+</p>
+
+</div><!-- end header -->
+
+
+<h1>PET - Package Entropy Tracker</h1>
+<p style="padding:0px 0px 0px 15px">
+PET is a collection of scripts that gather information about your (or your group's) packages.
+It allows you to see in a bird's eye view the health of hundreds of packages,
+instantly realizing where work is needed.
+<br>
+The code is at <a href= "https://anonscm.debian.org/cgit/pet/pet3.git/">https://anonscm.debian.org/cgit/pet/pet3.git/</a>
+<br>
+Database dumps can be found at <a href="http://pet.43-1.org/~pet/db/">http://pet.43-1.org/~pet/db/</a>
+<br>
+Discussions go on the <a href="https://lists.alioth.debian.org/mailman/listinfo/pet-devell">pet-devel</a> mailing list.
+<br>
+There are two ways to install Pet. With or without vagrant. Choose one and follow the next steps to install.
+</p>
+
+<h1>Installation using Vagrant</h1>
+<p style="padding:0px 0px 0px 15px">
+Vagrant is a tool for building complete development environments. With an easy-to-use workflow and focus on automation, Vagrant lowers development environment setup time, increases development/production parity, and makes the "works on my machine" excuse a relic of the past <a href="https://www.vagrantup.com/">Official Site Reference</a>.
+<br>
+Vagrant can be installed with the command: apt-get install vagrant. And all the binaries are in this page <a href="https://www.vagrantup.com/downloads.html">Vagrant Download</a>.
+<br>
+<br>
+To install PET, it is necessary to clone the repository and start vagrant:
+    <ul>
+      <li>$ git clone https://anonscm.debian.org/cgit/pet/pet3.git/
+      <li>$ cd pet/
+    </ul>
+</p>
+<p style="padding:0px 0px 0px 15px">
+Now, it is necessary to start vagrant up and access vagrants ssh. Follow this commands:
+    <ul>
+      <li>$ vagrant up
+      <li>$ vagrant ssh
+      <li>$ sudo su - pet
+    </ul>
+</p>
+<p style="padding:0px 0px 0px 15px">
+To start the web interface, execute:
+<ul>
+  <li>$ ./pet-serve
+</ul>
+</p>
+<p style="padding:0px 0px 0px 15px">
+To access it: <a href="http://localhost:4567/pkg-perl/pet.cgi">http://localhost:4567/pkg-perl/pet.cgi </a>
+</p>
+
+<h1>Installation without Vagrant</h1>
+  <h2> Requirements</h2>
+    <h3>Install this softwares according to your operation system:</h3>
+<p style="padding:0px 0px 0px 15px">
+<ul>
+  <li> postgresql-9.4
+  <li> postgresql-9.4-debversion
+  <li> python-argparse
+  <li> python-debian
+  <li> python-debianbts
+  <li> python-inotifyx
+  <li> python-paste
+  <li> python-psycopg2
+  <li> python-pyramid
+  <li> python-sqlalchemy
+  <li> python-subversion
+  <li> wget
+</ul>
+</p>
+
+<h1>Quick Start</h1>
+<p style="padding:0px 0px 0px 15px">
+<b>As root (waiting for python-pyramid-chameleon package, https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=785048):</b>
+<ul>
+  <li>$ pip install pyramid_chameleon
+</ul>
+</p>
+<p style="padding:0px 0px 0px 15px">
+<b>As root (more precise: as a postgres superuser):</b>
+<ul>
+  <li>$ su postgres
+  <li>$ createuser pet
+    <ul>
+      <li>Shall the new role be a superuser? (y/n) n
+      <li>Shall the new role be allowed to create databases? (y/n) y
+      <li>Shall the new role be allowed to create more new roles? (y/n) n
+    </ul>
+  <li>$ createdb -O pet pet
+  <li>$ psql pet < /usr/share/postgresql/9.4/contrib/debversion.sql
+</ul>
+</p>
+<p style="padding:0px 0px 0px 15px">
+<b>As the created user:</b>
+<ul>
+  <li>$ ./pet-update -c
+  <li>$ psql pet
+    <ul>
+      <li>pet=> INSERT INTO team (name, maintainer, url) VALUES ('pkg-perl', 'Debian Perl Group <pkg-perl-maintainers@lists.alioth.debian.org>', 'http://pkg-perl.alioth.debian.org/');
+      <li>pet=> INSERT INTO repository (name, type, root, web_root, team_id) VALUES ('git','git','https://pet.alioth.debian.org/pet2-data/pkg-perl/git-pkg-perl-packages.json','http://anonscm.debian.org/cgit/pkg-perl/packages', 1);
+      <li>pet=> INSERT INTO package (name, repository_id) VALUES ('clive', 1);
+      <li>pet=> INSERT INTO archive (name, url, web_root) VALUES ('debian', 'http://cdn.debian.net/debian', 'http://packages.qa.debian.org/');
+      <li>pet=> INSERT INTO suite (archive_id, name) VALUES (1, 'unstable');
+      <li>pet=> \q
+    </ul>
+  <li>$ ./update-package libboolean-perl
+  <li>$ ./update-bts
+  <li>$ ./update-archive debian
+</ul>
+</p>
+<p style="padding:0px 0px 0px 15px">
+To start the web interface:
+<ul>
+  <li>$ ./pet-serve
+</ul>
+</p>
+<p style="padding:0px 0px 0px 15px">
+To access it: <a href="http://localhost:8080/pkg-perl/pet.cgi">http://localhost:8080/pkg-perl/pet.cgi </a>
+</p>
+
+<h1>Update Repository</h1>
+<p style="padding:0px 0px 0px 15px">
+To get the packages, it is necessary to update your local repository.
+<ul>
+  <li>$ update-repository x
+</ul>
+</p>
+<p style="padding:0px 0px 0px 15px">
+x is a positive integer of the repository. e.g. pass 1.
+<br>
+This command will return all packages.
+<br>
+</p>
+<p style="padding:0px 0px 0px 15px">
+Now, update the packages with the names printed on $ update-repository x. Follow this command:
+<ul>
+  <li>$ update-package packages_name
+</ul>
+</p>
+<p style="padding:0px 0px 0px 15px">
+After updating all packages, run:
+<ul>
+  <li>$ ./update-bts
+  <li>$ ./update-watch
+  <li>$ ./update-archive debian
+</ul>
+</p>
+
+<div id="footer">
+  <p style="text-align: center">To report a problem with the web site, <a href="mailto:pet-devel@lists.alioth.debian.org">e-mail</a> us.</p>
+  <p style="text-align: center">Web site source code is <a href="http://anonscm.debian.org/cgit/pet/pet3.git">available</a>.</p>
+  <p style="text-align: center">Debian is a registered <a href="https://www.debian.org/trademark">trademark</a> of Software in the Public Interest, Inc.</p>
+</div>
