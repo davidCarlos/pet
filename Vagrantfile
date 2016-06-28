@@ -21,8 +21,13 @@ Vagrant.configure(2) do |config|
   config.vm.synced_folder ".", "/vagrant", type: "rsync",
     rsync__auto: true
 
-  config.vm.provision "chef_solo" do |chef|
+  config.vm.provision "chef_zero" do |chef|
     chef.add_recipe "pet"
+    # Specify the local paths where Chef data is stored
+    chef.cookbooks_path = "cookbooks"
+    chef.data_bags_path = "data_bags"
+    chef.nodes_path = "nodes"
+    chef.roles_path = "roles"
   end
 
   # Disable automatic box update checking. If you disable this, then
