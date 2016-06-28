@@ -29,7 +29,7 @@
         <!--
         Do not change the link or logo
       -->
-      <a href="./pet.cgi" title="Debian Home"><img src= "/static/img/openlogo-50.png"
+      <a href="https://www.debian.org/" title="Debian Home"><img src= "/static/img/openlogo-50.png"
         alt="Debian" width="50" height= "61"></a>
       </div>
 
@@ -38,7 +38,8 @@
         The section flag should be the site name highlighting the potential
         change of top nav links
       -->
-      package entropy tracker</p>
+      <a href="./pet.cgi"> package entropy tracker </a>
+    </p>
 
 
     </div><!-- end upperheader -->
@@ -64,7 +65,7 @@
     sub-domain name. Try to make your back end produce correct breadcrumbs
     Always leave one space between the slash and the link.
   -->
-  <a href="http://google.com/">Documentation</a>
+  <a href="/documentation">Documentation</a>
 </p>
 
 </div><!-- end header -->
