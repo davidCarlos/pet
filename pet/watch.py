@@ -202,6 +202,7 @@ class Watcher(object):
         homepage = None
       return dict(errors=errors, homepage=homepage)
     return dict(version=results[0][1], dversionmangle=results[0][2], homepage=results[0][3], url=results[0][0], errors=errors)
+
   def check_rule(self, rule):
     try:
       results = None
@@ -211,7 +212,10 @@ class Watcher(object):
       if results is None:
         results = []
         homepage = _re_sf.sub('http://qa.debian.org/watch/sf.php/', rule.homepage)
-        fh = urlopen(homepage, timeout=TIMEOUT())
+        try:
+          fh = urlopen(homepage, timeout=TIMEOUT())
+        except ValueError as e:
+          raise InvalidWatchFile(str(e))
         contents = fh.read()
         fh.close()
         if _re_http.match(homepage):
