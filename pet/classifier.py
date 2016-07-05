@@ -175,41 +175,52 @@ class Classifier(object):
                 nt, bugs.get(nt.source, []), suite_packages.get(nt.source, []),
                 tags.get(nt.package_id, [])))
 
-    def classify(self):
-        classified = dict()
-        ordered_packages = PriorityQueue()
+    def order_packages_by_popcon(self, packages):
         has_no_popcon = []
-        for p in self.packages:
-            if p.ready_for_upload:
-                cls = 'ready_for_upload'
-            elif p.has_rc_bugs:
-                cls = 'rc_bugs'
-            elif p.missing_tag:
-                cls = 'missing_tag'
-            elif not p.tags:
-                cls = 'new'
-            elif p.newer_upstream:
-                cls = 'new_upstream'
-            elif p.watch_problem:
-                cls = 'watch_problem'
-            elif p.bugs:
-                cls = 'bugs'
-            elif not p.is_tagged:
-                cls = 'wip'
-            else:
-                cls = 'other'
+        packages_queue = PriorityQueue()
+        for package in packages:
+            package_popcon = popcon.package(package.name)
 
-            package_popcon = popcon.package(p.name)
+            # The package has popcon
             if package_popcon:
-                ordered_packages.put((-package_popcon[p.name], cls, p))
+                packages_queue.put((-package_popcon[package.name], package))
             else:
-                has_no_popcon.append((cls, p))
-        while ordered_packages.empty() is False:
-            _, cls, package = ordered_packages.get()
-            classified.setdefault(cls, []).append(package)
+                has_no_popcon.append(package)
 
-        for cls, package in has_no_popcon:
-            classified.setdefault(cls, []).append(package)
+        ordered_packages = []
+        while packages_queue.empty() is False:
+            _, package = packages_queue.get()
+            ordered_packages.append(package)
+
+        for package in has_no_popcon:
+            ordered_packages.append(package)
+
+        return ordered_packages
+
+    def classify(self):
+        self.packages = self.order_packages_by_popcon(self.packages)
+        classified = dict()
+        for package in self.packages:
+            if package.ready_for_upload:
+                classification = 'ready_for_upload'
+            elif package.has_rc_bugs:
+                classification = 'rc_bugs'
+            elif package.missing_tag:
+                classification = 'missing_tag'
+            elif not package.tags:
+                classification = 'new'
+            elif package.newer_upstream:
+                classification = 'new_upstream'
+            elif package.watch_problem:
+                classification = 'watch_problem'
+            elif package.bugs:
+                classification = 'bugs'
+            elif not package.is_tagged:
+                classification = 'wip'
+            else:
+                classification = 'other'
+
+            classified.setdefault(classification, []).append(package)
 
         return classified
 
