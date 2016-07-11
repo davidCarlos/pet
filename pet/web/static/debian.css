@@ -845,7 +845,7 @@ div.tabular table, table.tabular, table.vendors {
 	margin-top: -0.169em;
 }
 table td {
-	padding-right: 1.5em;
+	padding-right: 0em;
 	background-image: url('Pics/greydot.png');
 	background-position: bottom left;
 	background-repeat: repeat-x;
