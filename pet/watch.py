@@ -73,7 +73,10 @@ class WatchRule(object):
                 elif len(kv) == 0:
                     pass
                 else:
-                    key, value = kv.split("=", 1)
+                    try:
+                        key, value = kv.split("=", 1)
+                    except ValueError as e:
+                        raise InvalidWatchFile(str(e)
                     match = _re_mangle.search(key)
                     if match:
                         options[key] = value.split(';')
