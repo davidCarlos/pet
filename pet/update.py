@@ -210,8 +210,10 @@ class PackageUpdater(object):
             if name not in known:
                 nt = NamedTree(
                     type=type, name=name,
-                    commit_id=str(commit_id), package=self.package)
+                    commit_id=str(commit_id), package=self.package,
+                    source=self.package.name)
                 self.session.add(nt)
+                self.session.commit()
                 changed.append(nt)
         return changed
 
@@ -260,9 +262,15 @@ class RepositoryUpdater(object):
                     self.session.delete(p)
             for name in existing_packages:
                 if name not in known_packages:
+                    print 'package: ' + name
                     package = Package(name=name, repository=self.repository)
                     self.session.add(package)
-            self.session.commit()
+                    '''TODO: Achar maneira de sempre executar o commit, mesmo
+                        o for quebrando por enquanto ele vai ficar aqui dentro,
+                        mas o certo e fazer o commit se
+                        mpre rodar, mesmo o codigo quebrando.
+                    '''
+                    self.session.commit()
         except:
             self.session.rollback()
             raise

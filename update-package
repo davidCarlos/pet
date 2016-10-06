@@ -27,14 +27,18 @@ def main(argv):
     updater = pet.update.PackageUpdater()
 
     for package_name in argv[1:]:
+      if(package_name == '--all'):
+        packages = session.query(pet.models.Package).all()
+      else:
         packages = session.query(pet.models.Package).filter_by(
             name=package_name) \
-            .all()
-        for package in packages:
-            repo = package.repository
-            vcs = pet.vcs.vcs_backend(repo)
-            print "I: Updating package {0}".format(package.name)
-            updater.run(package, vcs)
+                .all()
+
+      for package in packages:
+          repo = package.repository
+          vcs = pet.vcs.vcs_backend(repo)
+          print "I: Updating package {0}".format(package.name)
+          updater.run(package, vcs)
 
     session.commit()
 
