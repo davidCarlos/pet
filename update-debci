@@ -1,0 +1,32 @@
+#! /usr/bin/env python
+
+import pet.models
+import wget
+import sys
+import os
+import json
+import cPickle
+
+debci_url = 'https://ci.debian.net'
+
+def main(argv):
+    session = pet.models.Session()
+    packages = session.query(pet.models.Package).filter_by(name='libtest-fixme-perl').all()
+    download_data(packages[0].name)
+
+def download_data(package):
+    download_dest = '/home/vagrant/data/debci/'
+    if not os.path.exists(download_dest):
+        os.makedirs(download_dest)
+    url_path = '/data/packages/unstable/amd64/libt/%s/' % package
+    file_name = '20141013_022730.json'
+    wget.download(debci_url + url_path + file_name, download_dest)
+
+    with open(download_dest + file_name) as data_file:    
+        data = json.load(data_file)
+
+    print data
+    pass
+
+if __name__ == '__main__':
+    main(sys.argv)
